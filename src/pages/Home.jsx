@@ -793,18 +793,18 @@ const Home = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Restaurants Near You</h2>
-            {restaurants.length > 4 && !showAllRestaurants && (
+            {restaurants.length > 8 && !showAllRestaurants && (
               <button 
                 onClick={() => setShowAllRestaurants(true)}
                 className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium transition-colors"
               >
                 View All
                 <span className="px-2 py-0.5 bg-orange-600 text-white rounded-full text-xs font-semibold">
-                  {restaurants.length - 4}
+                  {restaurants.length - 8}
                 </span>
               </button>
             )}
-            {showAllRestaurants && restaurants.length > 4 && (
+            {showAllRestaurants && restaurants.length > 8 && (
               <button 
                 onClick={() => setShowAllRestaurants(false)}
                 className="flex items-center gap-2 text-gray-600 hover:text-gray-700 font-medium transition-colors"
@@ -816,7 +816,7 @@ const Home = () => {
 
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[1, 2, 3, 4].map((i) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div key={i} className="bg-white rounded-xl shadow-sm p-4 animate-pulse">
                   <div className="w-full h-40 bg-gray-200 rounded-lg mb-4"></div>
                   <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
@@ -826,7 +826,7 @@ const Home = () => {
             </div>
           ) : restaurants.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {(showAllRestaurants ? restaurants : restaurants.slice(0, 4)).map((restaurant) => (
+              {(showAllRestaurants ? restaurants : restaurants.slice(0, 8)).map((restaurant) => (
                 <div
                   key={restaurant.id}
                   onClick={() => handleRestaurantClick(restaurant.id)}
