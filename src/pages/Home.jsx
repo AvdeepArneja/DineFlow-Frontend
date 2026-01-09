@@ -35,6 +35,7 @@ const Home = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [cities, setCities] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [showAllRestaurants, setShowAllRestaurants] = useState(false);
   const [selectedCity, setSelectedCity] = useState(() => {
     // Try to get from localStorage first
     const storedCity = localStorage.getItem('selectedCity');
@@ -792,12 +793,23 @@ const Home = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-800">Restaurants Near You</h2>
-            {restaurants.length > 4 && (
-              <button className="flex items-center gap-1 text-red-600 hover:text-red-700 font-medium">
+            {restaurants.length > 4 && !showAllRestaurants && (
+              <button 
+                onClick={() => setShowAllRestaurants(true)}
+                className="flex items-center gap-2 text-orange-600 hover:text-orange-700 font-medium transition-colors"
+              >
                 View All
-                <span className="w-5 h-5 bg-red-600 text-white rounded-full flex items-center justify-center text-xs">
+                <span className="px-2 py-0.5 bg-orange-600 text-white rounded-full text-xs font-semibold">
                   {restaurants.length - 4}
                 </span>
+              </button>
+            )}
+            {showAllRestaurants && restaurants.length > 4 && (
+              <button 
+                onClick={() => setShowAllRestaurants(false)}
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-700 font-medium transition-colors"
+              >
+                Show Less
               </button>
             )}
           </div>
@@ -814,7 +826,7 @@ const Home = () => {
             </div>
           ) : restaurants.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {restaurants.map((restaurant) => (
+              {(showAllRestaurants ? restaurants : restaurants.slice(0, 4)).map((restaurant) => (
                 <div
                   key={restaurant.id}
                   onClick={() => handleRestaurantClick(restaurant.id)}
