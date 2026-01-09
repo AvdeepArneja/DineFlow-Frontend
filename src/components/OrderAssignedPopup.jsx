@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Bike, UtensilsCrossed, DollarSign, User, ArrowRight, CheckCircle } from 'lucide-react';
 
 const OrderAssignedPopup = ({ notification, onClose }) => {
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
 
@@ -21,8 +23,15 @@ const OrderAssignedPopup = ({ notification, onClose }) => {
   }, [onClose]);
 
   const handleViewOrder = () => {
-    // Just close the popup - the order will be visible in the orders list
-    // The rider can click on it from there
+    const orderData = notification.data || notification;
+    const orderId = orderData.order_id || notification.order_id;
+    
+    // Navigate to order details page if order_id is available
+    if (orderId) {
+      navigate(`/orders/${orderId}`);
+    }
+    
+    // Close the popup
     setIsExiting(true);
     setTimeout(() => {
       onClose();
