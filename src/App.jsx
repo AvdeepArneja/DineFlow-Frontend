@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import SearchResults from "./pages/SearchResults";
 import RestaurantDashboard from "./pages/RestaurantDashboard";
 import CreateRestaurant from "./pages/CreateRestaurant";
+import EditRestaurant from "./pages/EditRestaurant";
 import MenuManagement from "./pages/MenuManagement";
 import RiderDashboard from "./pages/RiderDashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -107,6 +108,15 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['restaurant_owner']}>
                 <CreateRestaurant />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/restaurant/:id/edit" 
+            element={
+              <ProtectedRoute allowedRoles={['restaurant_owner']}>
+                <EditRestaurant />
               </ProtectedRoute>
             } 
           />

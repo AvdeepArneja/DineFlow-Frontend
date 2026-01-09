@@ -17,7 +17,8 @@ import {
   Plus,
   Settings,
   Bell,
-  X
+  X,
+  Edit
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { restaurantsApi } from '../api/restaurants';
@@ -476,15 +477,28 @@ const RestaurantDashboard = () => {
           <div className="mb-6 bg-white rounded-lg shadow-sm p-4">
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-700">Select Restaurant</label>
-              {selectedRestaurant && (
-                <button
-                  onClick={() => navigate(`/restaurant/${selectedRestaurant}/menu`)}
-                  className="flex items-center gap-2 px-3 py-1 text-sm text-orange-600 hover:text-orange-700 font-medium"
-                >
-                  <Settings className="w-4 h-4" />
-                  Manage Menu
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {selectedRestaurant && (
+                  <>
+                    <button
+                      onClick={() => navigate(`/restaurant/${selectedRestaurant}/edit`)}
+                      className="flex items-center gap-2 px-3 py-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                      title="Edit Restaurant"
+                    >
+                      <Edit className="w-4 h-4" />
+                      <span className="hidden sm:inline">Edit</span>
+                    </button>
+                    <button
+                      onClick={() => navigate(`/restaurant/${selectedRestaurant}/menu`)}
+                      className="flex items-center gap-2 px-3 py-1 text-sm text-orange-600 hover:text-orange-700 font-medium"
+                      title="Manage Menu"
+                    >
+                      <Settings className="w-4 h-4" />
+                      <span className="hidden sm:inline">Manage Menu</span>
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
             <select
               value={selectedRestaurant || ''}
