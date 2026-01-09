@@ -41,6 +41,7 @@ const RestaurantDashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [newOrderNotifications, setNewOrderNotifications] = useState([]); // Queue of notifications to show
   const shownNotificationIdsRef = useRef(new Set()); // Use ref for immediate synchronous access
+  const statusFilterRef = useRef(''); // Track current status filter for Socket.io handler
   const [initialLoadComplete, setInitialLoadComplete] = useState(false); // Track if initial load is done
   const [showNotifications, setShowNotifications] = useState(false);
   const [activeTab, setActiveTab] = useState('orders'); // 'orders' or 'notifications'
@@ -115,16 +116,7 @@ const RestaurantDashboard = () => {
       const handleOrderUpdate = (data) => {
         console.log('🔄 Order update received via Socket.io:', data);
         
-        // Optimistically update only the specific order in the list (without refetching all orders)
-        setOrders(prevOrders => 
-          prevOrders.map(order => 
-            order.id === data.order_id 
-              ? { ...order, status: data.status }
-              : order
-          )
-        );
-        
-        // Also update allOrders for stats
+        // Update allOrders for stats (always keep it updated)
         setAllOrders(prevOrders => 
           prevOrders.map(order => 
             order.id === data.order_id 
@@ -132,6 +124,23 @@ const RestaurantDashboard = () => {
               : order
           )
         );
+        
+        // Update orders list: if status filter is active and new status doesn't match, remove the order
+        setOrders(prevOrders => {
+          const currentFilter = statusFilterRef.current; // Use ref to get current filter value
+          const updated = prevOrders.map(order => 
+            order.id === data.order_id 
+              ? { ...order, status: data.status }
+              : order
+          );
+          
+          // If a status filter is active and the new status doesn't match, remove the order
+          if (currentFilter && data.status !== currentFilter) {
+            return updated.filter(order => order.id !== data.order_id);
+          }
+          
+          return updated;
+        });
         
         // Don't show toast here - the user already gets feedback from their own action
         // This Socket.io event is mainly for keeping UI in sync, not for notifications
@@ -156,6 +165,11 @@ const RestaurantDashboard = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  // Keep statusFilterRef in sync with statusFilter state
+  useEffect(() => {
+    statusFilterRef.current = statusFilter;
+  }, [statusFilter]);
 
   useEffect(() => {
     if (restaurants.length > 0) {
@@ -292,14 +306,7 @@ const RestaurantDashboard = () => {
     const previousOrders = [...orders];
     const previousAllOrders = [...allOrders];
     
-    setOrders(prevOrders => 
-      prevOrders.map(order => 
-        order.id === orderId 
-          ? { ...order, status: newStatus }
-          : order
-      )
-    );
-    
+    // Update allOrders for stats (always keep it updated)
     setAllOrders(prevOrders => 
       prevOrders.map(order => 
         order.id === orderId 
@@ -307,6 +314,22 @@ const RestaurantDashboard = () => {
           : order
       )
     );
+    
+    // Update orders list: if status filter is active and new status doesn't match, remove the order
+    setOrders(prevOrders => {
+      const updated = prevOrders.map(order => 
+        order.id === orderId 
+          ? { ...order, status: newStatus }
+          : order
+      );
+      
+      // If a status filter is active and the new status doesn't match, remove the order
+      if (statusFilter && newStatus !== statusFilter) {
+        return updated.filter(order => order.id !== orderId);
+      }
+      
+      return updated;
+    });
     
     setUpdatingOrderId(orderId); // Track which order is being updated
     try {
