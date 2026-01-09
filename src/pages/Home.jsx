@@ -10,9 +10,7 @@ import {
   Star, 
   Heart,
   UtensilsCrossed,
-  Pizza,
   Soup,
-  Drumstick,
   Clock,
   Package,
   ArrowRight,
@@ -322,8 +320,12 @@ const Home = () => {
       if (selectedCity) {
         params.city = selectedCity;
       }
-      // Add cuisine filter if category is not Popular
-      if (selectedCategory && selectedCategory !== 'Popular') {
+      // Add filters based on selected category
+      if (selectedCategory === 'Popular') {
+        // Popular = restaurants with rating > 3
+        params.min_rating = 3;
+      } else if (selectedCategory && selectedCategory !== 'Popular') {
+        // Add cuisine filter for other categories
         params.cuisine_type = selectedCategory;
       }
       
@@ -397,9 +399,7 @@ const Home = () => {
 
   const categories = [
     { id: 'Popular', label: 'Popular', icon: Star },
-    { id: 'Pizza', label: 'Pizza', icon: Pizza },
-    { id: 'Asian', label: 'Asian', icon: Soup },
-    { id: 'Chicken', label: 'Chicken', icon: Drumstick },
+    { id: 'Indian', label: 'Indian', icon: Soup },
   ];
 
   const handleRestaurantClick = (restaurantId) => {
