@@ -39,7 +39,7 @@ const Home = () => {
     const storedCity = localStorage.getItem('selectedCity');
     return storedCity || '';
   });
-  const [selectedCategory, setSelectedCategory] = useState('Popular');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -321,11 +321,14 @@ const Home = () => {
         params.city = selectedCity;
       }
       // Add filters based on selected category
-      if (selectedCategory === 'Popular') {
+      if (selectedCategory === 'All') {
+        // All = no filters, show all restaurants
+        // Only apply city filter if selected
+      } else if (selectedCategory === 'Popular') {
         // Popular = restaurants with rating > 3
         params.min_rating = 3;
-      } else if (selectedCategory && selectedCategory !== 'Popular') {
-        // Add cuisine filter for other categories
+      } else if (selectedCategory && selectedCategory !== 'Popular' && selectedCategory !== 'All') {
+        // Add cuisine filter for other categories (e.g., Indian)
         params.cuisine_type = selectedCategory;
       }
       
@@ -398,6 +401,7 @@ const Home = () => {
   };
 
   const categories = [
+    { id: 'All', label: 'All', icon: UtensilsCrossed },
     { id: 'Popular', label: 'Popular', icon: Star },
     { id: 'Indian', label: 'Indian', icon: Soup },
   ];
