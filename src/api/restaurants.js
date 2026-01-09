@@ -48,6 +48,18 @@ export const restaurantsApi = {
     return response.data;
   },
 
+  // Update restaurant
+  updateRestaurant: async (restaurantId, updateData) => {
+    const response = await axiosInstance.put(`/restaurants/${restaurantId}`, updateData);
+    return response.data;
+  },
+
+  // Delete restaurant (soft delete)
+  deleteRestaurant: async (restaurantId) => {
+    const response = await axiosInstance.delete(`/restaurants/${restaurantId}`);
+    return response.data;
+  },
+
   // Search restaurants and menu items
   search: async (query, city = null) => {
     const params = { q: query };
